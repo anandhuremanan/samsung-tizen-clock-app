@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>TV Clock</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="$WEBAPIS/webapis/webapis.js"></script>
+</head>
+<body>
+    <div id="stage">
+        <div class="slide" id="slideA"></div>
+        <div class="slide" id="slideB"></div>
+        <div id="shade"></div>
+    </div>
+
+    <div id="clock" class="pill corner-tr">
+        <div id="time">--:--</div>
+        <div id="date"></div>
+    </div>
+
+    <div id="caption"></div>
+
+    <div id="help">
+        <div><b>CH ▲ / ▼</b> move clock</div>
+        <div><b>OK</b> big / small clock</div>
+        <div><b>◀ / ▶</b> previous / next photo</div>
+        <div><b>▲ / ▼</b> settings</div>
+        <div><b>Back</b> exit</div>
+    </div>
+
+    <div id="settings" aria-hidden="true">
+        <h1>Settings</h1>
+        <ul id="settings-list"></ul>
+        <div class="settings-hint">▲ / ▼ choose · OK or ◀ / ▶ change · Back close</div>
+        <footer>
+            <div class="app-name">TV Clock <span id="app-version"></span></div>
+            <div class="maker">Made by <b>Probably Fine Labs</b></div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Signing material: never commit
+certs/
+*.p12
+password.txt
+
+# Build output from `tizen package`
+*.wgt
+app/author-signature.xml
+app/signature1.xml
+app/.manifest.tmp
+
+__pycache__/

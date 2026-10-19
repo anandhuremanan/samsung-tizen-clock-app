@@ -1,0 +1,177 @@
+html, body {
+    margin: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: #0b0d12;
+    font-family: "SamsungOne", "Samsung Sans", "Helvetica Neue", Arial, sans-serif;
+    color: #fff;
+    cursor: none;
+}
+/* Pin the page to the screen: anything off-screen (like the closed settings
+   panel) must never make the page scrollable, or the TV scrolls it into view */
+body { position: fixed; top: 0; left: 0; }
+
+/* Slideshow: two layers that crossfade, each with a slow Ken Burns drift */
+/* overflow: hidden clips the zoomed slides; without it the page becomes scrollable
+   and the TV's key handling scrolls the whole stage sideways */
+#stage { position: fixed; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 30% 20%, #23304a, #0b0d12 70%); }
+.slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 2.5s ease-in-out;
+    will-change: opacity, transform;
+}
+.slide.show { opacity: 1; }
+.slide.drift-a { animation: driftA 70s linear forwards; }
+.slide.drift-b { animation: driftB 70s linear forwards; }
+body.no-motion .slide { animation: none; transform: none; }
+@keyframes driftA { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.14) translate(-30px, -18px); } }
+@keyframes driftB { from { transform: scale(1.14) translate(24px, 14px); } to { transform: scale(1.04) translate(0, 0); } }
+
+/* Soft vignette so the clock and caption stay readable on bright photos */
+#shade {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,.28), transparent 22%, transparent 72%, rgba(0,0,0,.38));
+}
+
+/* Clock pill */
+#clock {
+    position: absolute;
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    padding: 18px 36px;
+    border-radius: 999px;
+    background: rgba(10, 12, 18, .45);
+    border: 1px solid rgba(255, 255, 255, .18);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: top .5s ease, left .5s ease, right .5s ease, bottom .5s ease, margin 2s ease,
+                transform .5s ease, padding .5s ease, border-radius .5s ease;
+}
+#time { white-space: nowrap; font-size: 56px; font-weight: 600; letter-spacing: 1px; font-variant-numeric: tabular-nums; line-height: 1; }
+#date { white-space: nowrap; font-size: 26px; opacity: .8; line-height: 1; }
+
+.corner-tr { top: 56px; right: 64px; }
+.corner-br { bottom: 56px; right: 64px; }
+.corner-bl { bottom: 56px; left: 64px; }
+.corner-tl { top: 56px; left: 64px; }
+
+/* Big mode: centered, stacked */
+#clock.big {
+    top: 50%; left: 50%; right: auto; bottom: auto;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 48px 96px;
+    border-radius: 56px;
+}
+#clock.big #time { font-size: 200px; font-weight: 300; }
+#time .ampm { font-size: .45em; margin-left: .2em; opacity: .85; }
+#clock.big #date { font-size: 44px; }
+
+/* Photo caption sits in the opposite vertical half from the pill */
+#caption {
+    position: absolute;
+    left: 64px;
+    bottom: 48px;
+    max-width: 1100px;
+    font-size: 22px;
+    opacity: .75;
+    text-shadow: 0 2px 8px rgba(0,0,0,.7);
+    transition: opacity 1s ease;
+}
+#caption.top { bottom: auto; top: 48px; }
+#caption.right { left: auto; right: 64px; text-align: right; }
+#caption:empty, body.no-captions #caption { opacity: 0; }
+
+/* Key hints, shown briefly on launch and on any unmapped key */
+#help {
+    position: absolute;
+    left: 50%;
+    bottom: 120px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    padding: 18px 36px;
+    border-radius: 999px;
+    background: rgba(10, 12, 18, .6);
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity .6s ease;
+}
+#help.show { opacity: 1; }
+#help b { color: #ffd479; font-weight: 600; margin-right: 6px; }
+
+/* Settings panel, slides in from the right */
+#settings {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 720px;
+    box-sizing: border-box;
+    padding: 72px 64px 56px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(12, 14, 20, .82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-left: 1px solid rgba(255, 255, 255, .12);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform .4s ease, visibility 0s linear .4s;
+}
+#settings.open { transform: translateX(0); visibility: visible; transition: transform .4s ease; }
+#settings h1 { margin: 0 0 40px; font-size: 48px; font-weight: 600; }
+
+#settings-list { list-style: none; margin: 0; padding: 0; }
+#settings-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    margin-bottom: 10px;
+    border-radius: 18px;
+    font-size: 30px;
+    border: 2px solid transparent;
+    transition: background .2s ease, border-color .2s ease;
+}
+#settings-list li.focus { background: rgba(255, 255, 255, .12); border-color: #ffd479; }
+#settings-list .value { color: #ffd479; font-weight: 600; }
+#settings-list li.focus .value::before { content: "◀  "; opacity: .6; }
+#settings-list li.focus .value::after { content: "  ▶"; opacity: .6; }
+
+.settings-hint { margin-top: 24px; font-size: 22px; opacity: .6; }
+
+#settings footer {
+    margin-top: auto;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, .12);
+    font-size: 24px;
+    line-height: 1.6;
+}
+#settings footer .app-name { opacity: .7; }
+#settings footer .maker b { color: #ffd479; font-weight: 600; }
+
+/* Black background: no photos, just dimmed digits on true black */
+body.black-bg #stage { background: #000; }
+body.black-bg .slide,
+body.black-bg #shade,
+body.black-bg #caption { display: none; }
+body.black-bg #clock {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    color: rgba(255, 255, 255, .7);
+}
